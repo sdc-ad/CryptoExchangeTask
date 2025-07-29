@@ -1,9 +1,10 @@
 ﻿using CryptoExchangeTask.Core.Errors;
 using CryptoExchangeTask.Core.Model;
+using CryptoExchangeTask.Core.Repository;
 
 namespace CryptoExchangeTask.Core;
 
-public class OrderPlanner
+public abstract class OrderPlanner
 {
     private readonly IExchangeRepository _exchangeRepository;
 
@@ -12,15 +13,25 @@ public class OrderPlanner
         _exchangeRepository = exchangeRepository;
     }
 
-    public OrderPlan Plan(OrderType type, decimal amount)
+    public OrderPlan Plan(decimal amount)
     {
         return new OrderPlan
         {
-            PlannedOrders = GetPlannedOrders(type, amount).ToList()
+            PlannedOrders = GetPlannedOrders(amount).ToList()
         };
     }
 
-    private IEnumerable<PlannedOrder> GetPlannedOrders(OrderType type, decimal amount)
+    protected abstract decimal AvailableBalance(AvailableFunds availableFunds);
+
+    protected abstract decimal BalanceToAmount(decimal balance, decimal price);
+
+    protected abstract decimal AmountToBalance(decimal amount, decimal price);
+
+    protected abstract IEnumerable<OrderBookEntry> OrderBookEntries(OrderBook orderBook);
+
+    protected abstract IEnumerable<OrderPlanState> SortOrderPlanStates(IEnumerable<OrderPlanState> entries);
+
+    private IEnumerable<PlannedOrder> GetPlannedOrders(decimal amount)
     {
         var orders = _exchangeRepository.Exchanges
             .SelectMany(ex =>
@@ -28,23 +39,26 @@ public class OrderPlanner
                 var exchangeState = new ExchangePlanState
                 {
                     ExchangeId = ex.Id,
-                    Balance = ex.AvailableFunds.Euro
+                    Balance = AvailableBalance(ex.AvailableFunds)
                 };
 
-                return ex.OrderBook.Asks
-                    .Select(o => new
+                return OrderBookEntries(ex.OrderBook)
+                    .Select(o => new OrderPlanState
                     {
-                        ExchangeState = exchangeState,
+                        ExchangePlanState = exchangeState,
                         OrderId = o.Order.Id,
                         Amount = o.Order.Amount,
                         Price = o.Order.Price
                     });
-            })
-            .OrderBy(o => o.Price);
+            });
+
+        orders = SortOrderPlanStates(orders);
 
         foreach (var order in orders)
         {
-            var plannedAmount = Math.Min(Math.Min(order.Amount, amount), order.ExchangeState.Balance / order.Price);
+            var plannedAmount = Math.Min(
+                Math.Min(order.Amount, amount),
+                BalanceToAmount(order.ExchangePlanState.Balance, order.Price));
 
             if (plannedAmount <= 0)
             {
@@ -52,11 +66,11 @@ public class OrderPlanner
             }
 
             amount -= plannedAmount;
-            order.ExchangeState.Balance -= plannedAmount;
+            order.ExchangePlanState.Balance -= AmountToBalance(plannedAmount, order.Price);
 
             yield return new PlannedOrder
             {
-                FulfilledByExchangeId = order.ExchangeState.ExchangeId,
+                FulfilledByExchangeId = order.ExchangePlanState.ExchangeId,
                 FulfilledByOrderId = order.OrderId,
                 Amount = plannedAmount,
                 Price = order.Price
@@ -74,10 +88,21 @@ public class OrderPlanner
         }
     }
 
-    private class ExchangePlanState
+    protected class ExchangePlanState
     {
         public string ExchangeId { get; init; } = string.Empty;
 
         public decimal Balance { get; set; }
+    }
+
+    protected class OrderPlanState
+    {
+        public ExchangePlanState ExchangePlanState { get; init; } = new();
+
+        public Guid OrderId { get; init; }
+
+        public decimal Amount { get; init; }
+
+        public decimal Price { get; init; }
     }
 }

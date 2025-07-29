@@ -1,4 +1,5 @@
 ﻿using CryptoExchangeTask.Core.Model;
+using CryptoExchangeTask.Core.Repository;
 
 namespace CryptoExchangeTask.Core.UnitTests.Mock;
 

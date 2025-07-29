@@ -1,7 +1,7 @@
 ﻿using CryptoExchangeTask.Core.Model;
 using System.Text.Json;
 
-namespace CryptoExchangeTask.Core;
+namespace CryptoExchangeTask.Core.Repository;
 
 public class ExchangeRepository : IExchangeRepository
 {

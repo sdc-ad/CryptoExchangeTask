@@ -1,6 +1,6 @@
 ﻿using CryptoExchangeTask.Core.Model;
+using CryptoExchangeTask.Core.Repository;
 using Shouldly;
-using System.Threading.Tasks;
 
 namespace CryptoExchangeTask.Core.UnitTests;
 

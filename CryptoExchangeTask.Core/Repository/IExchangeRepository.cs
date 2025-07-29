@@ -1,6 +1,6 @@
 ﻿using CryptoExchangeTask.Core.Model;
 
-namespace CryptoExchangeTask.Core;
+namespace CryptoExchangeTask.Core.Repository;
 
 public interface IExchangeRepository
 {
