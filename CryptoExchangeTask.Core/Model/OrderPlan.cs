@@ -2,5 +2,5 @@
 
 public class OrderPlan
 {
-    public List<PlannedOrder> PlannedOrders { get; init; } = new();
+    public IReadOnlyList<PlannedOrder> PlannedOrders { get; init; } = new List<PlannedOrder>();
 }
