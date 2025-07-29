@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Data\exchange-01.json" />
+    <None Remove="Data\exchange-02.json" />
+    <None Remove="Data\exchange-03.json" />
+    <None Remove="Data\exchange-04.json" />
+    <None Remove="Data\exchange-05.json" />
+    <None Remove="Data\exchange-06.json" />
+    <None Remove="Data\exchange-07.json" />
+    <None Remove="Data\exchange-08.json" />
+    <None Remove="Data\exchange-09.json" />
+    <None Remove="Data\exchange-10.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\exchange-01.json" />
+    <EmbeddedResource Include="Data\exchange-02.json" />
+    <EmbeddedResource Include="Data\exchange-03.json" />
+    <EmbeddedResource Include="Data\exchange-04.json" />
+    <EmbeddedResource Include="Data\exchange-05.json" />
+    <EmbeddedResource Include="Data\exchange-06.json" />
+    <EmbeddedResource Include="Data\exchange-07.json" />
+    <EmbeddedResource Include="Data\exchange-08.json" />
+    <EmbeddedResource Include="Data\exchange-09.json" />
+    <EmbeddedResource Include="Data\exchange-10.json" />
+  </ItemGroup>
+
+
+</Project>
