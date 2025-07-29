@@ -78,14 +78,11 @@ public abstract class OrderPlanner
 
             if (amount <= 0)
             {
-                break;
+                yield break;
             }
         }
 
-        if (amount > 0)
-        {
-            throw new InsufficientBalanceException();
-        }
+        throw new InsufficientBalanceException();
     }
 
     protected class ExchangePlanState

@@ -18,6 +18,9 @@ public class SellTests : OrderPlannerTestBase
         plan.ShouldBeEquivalentTo(
             MakeExpectedPlan(
                 MakeExpectedOrder(exchange, bidOrderBookEntry, 2)));
+
+        plan.TotalAmount.ShouldBe(2m);
+        plan.TotalPrice.ShouldBe(500m);
     }
 
     [Fact]
@@ -49,6 +52,9 @@ public class SellTests : OrderPlannerTestBase
         plan.ShouldBeEquivalentTo(MakeExpectedPlan(
             MakeExpectedOrder(exchange1, exchange1Bid2, 3),
             MakeExpectedOrder(exchange2, exchange2Bid1, 1)));
+
+        plan.TotalAmount.ShouldBe(4m);
+        plan.TotalPrice.ShouldBe(2750m);
     }
 
     [Fact]

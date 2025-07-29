@@ -4,7 +4,7 @@ using CryptoExchangeTask.Core.UnitTests.Mock;
 using Shouldly;
 
 namespace CryptoExchangeTask.Core.UnitTests.OrderPlannerTests;
-public  class BuyTests : OrderPlannerTestBase
+public class BuyTests : OrderPlannerTestBase
 {
     [Fact]
     public void PlansBuyFromSingleExchangeSingleOrder()
@@ -17,6 +17,9 @@ public  class BuyTests : OrderPlannerTestBase
         plan.ShouldBeEquivalentTo(
             MakeExpectedPlan(
                 MakeExpectedOrder(exchange, askOrderBookEntry, 2)));
+
+        plan.TotalAmount.ShouldBe(2m);
+        plan.TotalPrice.ShouldBe(500m);
     }
 
     [Fact]
@@ -48,6 +51,9 @@ public  class BuyTests : OrderPlannerTestBase
         plan.ShouldBeEquivalentTo(MakeExpectedPlan(
             MakeExpectedOrder(exchange1, exchange1Ask1, 3),
             MakeExpectedOrder(exchange2, exchange2Ask1, 1)));
+
+        plan.TotalAmount.ShouldBe(4m);
+        plan.TotalPrice.ShouldBe(1250m);
     }
 
     [Fact]
