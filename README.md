@@ -27,6 +27,8 @@ For example:
 
 The project also serves an Open API JSON on `/openapi/v1.json` and the file `CryptoExchangeTask.WebAPI.http` can be used to submit requests to the service too.
 
+The exchange JSON files are copied into the Data folder by the build. You can replace these files after building for different exchange data.
+
 ## Docker Support
 The Web API project contains a Dockerfile and there is a docker-compose file at the root of this solution. Running `docker compose up` in this folder will build and run the Web API in Docker. It will expose the service on ports 8080 (http) and 8081 (https).
 
