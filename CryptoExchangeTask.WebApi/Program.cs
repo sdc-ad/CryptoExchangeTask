@@ -1,14 +1,17 @@
 using CryptoExchangeTask.Core;
 using CryptoExchangeTask.Core.Errors;
 using CryptoExchangeTask.Core.Repository;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddSingleton<IExchangeRepository, ExchangeRepository>();
+builder.Services.AddSingleton<IExchangeRepository, FileExchangeRepository>();
 builder.Services.AddTransient<BuyOrderPlanner>();
 builder.Services.AddTransient<SellOrderPlanner>();
+
+builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 var app = builder.Build();
 
@@ -19,6 +22,7 @@ if (app.Environment.IsDevelopment())
     app.MapGet("/", () => Results.Redirect("/openapi/v1.json"));
 }
 
+// Disabled this, so that if there are certificate problems during demonstration it will still be possible to access the API
 //app.UseHttpsRedirection();
 
 app.MapGet("/plan/buy", (decimal amount, BuyOrderPlanner planner) => ExecutePlan(amount, planner));

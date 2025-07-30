@@ -4,8 +4,15 @@ using CryptoExchangeTask.Core.UnitTests.Mock;
 using Shouldly;
 
 namespace CryptoExchangeTask.Core.UnitTests.OrderPlannerTests;
+
+/// <summary>
+/// Tests creating "buy" plans.
+/// </summary>
 public class BuyTests : OrderPlannerTestBase
 {
+    /// <summary>
+    /// Given a single exchange, with a single order, uses that order to fulfill the request.
+    /// </summary>
     [Fact]
     public void PlansBuyFromSingleExchangeSingleOrder()
     {
@@ -22,6 +29,10 @@ public class BuyTests : OrderPlannerTestBase
         plan.TotalPrice.ShouldBe(500m);
     }
 
+    /// <summary>
+    /// Given a single exchange with multiple orders, splits the request across the orders, using the 
+    /// cheaper order first.
+    /// </summary>
     [Fact]
     public void PlansBuyFromSingleExchangeMultipleOrders()
     {
@@ -36,6 +47,10 @@ public class BuyTests : OrderPlannerTestBase
             MakeExpectedOrder(exchange, askOrderBookEntry2, 1)));
     }
 
+    /// <summary>
+    /// Given multiple exchanges with multiple orders, splits the request across the orders,
+    /// using the cheaper orders first, even if they are at different exchanges.
+    /// </summary>
     [Fact]
     public void PlansBuyFromMultipleExchanges()
     {
@@ -56,6 +71,10 @@ public class BuyTests : OrderPlannerTestBase
         plan.TotalPrice.ShouldBe(1250m);
     }
 
+    /// <summary>
+    /// Given multiple exchanges with multiple orders, splits the request across the orders, using the cheapest orders first,
+    /// but following the available balance at each exchange.
+    /// </summary>
     [Fact]
     public void PlansBuyFromMultipleExchangesLimitedBalance()
     {
@@ -74,6 +93,9 @@ public class BuyTests : OrderPlannerTestBase
             MakeExpectedOrder(exchange2, exchange2Ask1, 2.5m)));
     }
 
+    /// <summary>
+    /// Given exchanges where the balance is insufficient to fulfill the request, throws an exception
+    /// </summary>
     [Fact]
     public void InvalidPlansBuyBalanceUnavailable()
     {
@@ -87,11 +109,33 @@ public class BuyTests : OrderPlannerTestBase
         Assert.Throws<InsufficientBalanceException>(() => MakePlanner(exchange1, exchange2).Plan(4));
     }
 
+    /// <summary>
+    /// Create an instance of the "buy" planner.
+    /// </summary>
+    /// <param name="exchanges">The test exchange data.</param>
+    /// <returns>An instance of the planner.</returns>
     private static OrderPlanner MakePlanner(params Exchange[] exchanges)
     {
         return new BuyOrderPlanner(new TestExchangeRepository
         {
             Exchanges = exchanges.ToList()
         });
+    }
+
+    /// <summary>
+    /// Make an expected "buy" Planned Order object.
+    /// </summary>
+    /// <param name="fulfilledByExchange">The exchange which is expected to be used to fulfill this order.</param>
+    /// <param name="fulfilledByOrder">The order book entry which is expected to be used to fulfill this order.</param>
+    /// <param name="amount">The expected amount of the planned order.</param>
+    /// <returns>A Planned Order object.</returns>
+    private static PlannedOrder MakeExpectedOrder(Exchange fulfilledByExchange, OrderBookEntry fulfilledByOrder, decimal amount)
+    {
+        return new PlannedOrder(
+            FulfilledByExchangeId: fulfilledByExchange.Id,
+            FulfilledByOrderId: fulfilledByOrder.Order.Id,
+            OrderType: OrderType.Buy,
+            Amount: amount,
+            Price: fulfilledByOrder.Order.Price);
     }
 }

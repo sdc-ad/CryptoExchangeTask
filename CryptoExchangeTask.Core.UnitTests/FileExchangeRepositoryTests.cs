@@ -4,12 +4,15 @@ using Shouldly;
 
 namespace CryptoExchangeTask.Core.UnitTests;
 
-public class ExchangeRepositoryTests
+public class FileExchangeRepositoryTests
 {
+    /// <summary>
+    /// Tests that the FileExchangeRepository correctly deserializes the provided JSON files.
+    /// </summary>
     [Fact]
     public void TestDeserialization()
     {
-        var repository = new ExchangeRepository();
+        var repository = new FileExchangeRepository();
 
         repository.Exchanges.Count.ShouldBe(10);
 

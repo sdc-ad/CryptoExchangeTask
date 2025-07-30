@@ -4,9 +4,16 @@ using System.Text.Json;
 
 namespace CryptoExchangeTask.Core.Repository;
 
-public class ExchangeRepository : IExchangeRepository
+/// <summary>
+/// An exchange repository which reads the data from JSON files.
+/// </summary>
+public class FileExchangeRepository : IExchangeRepository
 {
-    public ExchangeRepository()
+    /// <summary>
+    /// Creates an instance of the class. Reads the data from the files here.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if the location of the files cannot be determined.</exception>
+    public FileExchangeRepository()
     {
         var folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
             throw new InvalidOperationException("Unable to find location of data files");
@@ -29,5 +36,6 @@ public class ExchangeRepository : IExchangeRepository
             .ToList();
     }
 
+    /// <inheritdoc/>
     public List<Exchange> Exchanges { get; }
 }

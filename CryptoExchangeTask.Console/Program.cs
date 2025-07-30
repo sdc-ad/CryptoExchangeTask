@@ -4,6 +4,7 @@ using CryptoExchangeTask.Core.Model;
 using CryptoExchangeTask.Core.Repository;
 using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 if (!(args.Length == 2 &&
     Enum.TryParse<OrderType>(args[0], true, out var orderType) &&
@@ -13,7 +14,7 @@ if (!(args.Length == 2 &&
     return 1;
 }
 
-var repository = new ExchangeRepository();
+var repository = new FileExchangeRepository();
 
 OrderPlanner planner = orderType switch
 {
@@ -30,7 +31,11 @@ try
             plan,
             new JsonSerializerOptions
             {
-                WriteIndented = true
+                WriteIndented = true,
+                Converters =
+                {
+                    new JsonStringEnumConverter()
+                }
             }));
 }
 catch (InsufficientBalanceException)
