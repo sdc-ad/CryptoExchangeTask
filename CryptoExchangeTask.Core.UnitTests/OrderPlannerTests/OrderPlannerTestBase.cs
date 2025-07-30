@@ -1,5 +1,4 @@
 ﻿using CryptoExchangeTask.Core.Model;
-using CryptoExchangeTask.Core.UnitTests.Mock;
 
 namespace CryptoExchangeTask.Core.UnitTests.OrderPlannerTests;
 

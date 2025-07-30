@@ -1,4 +1,5 @@
 ﻿namespace CryptoExchangeTask.Core.Model;
+
 public class OrderBook
 {
     public IReadOnlyList<OrderBookEntry> Bids { get; init; } = new List<OrderBookEntry>();
