@@ -1,6 +1,8 @@
 using CryptoExchangeTask.Core;
 using CryptoExchangeTask.Core.Errors;
+using CryptoExchangeTask.Core.Model;
 using CryptoExchangeTask.Core.Repository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,26 +21,27 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapGet("/", () => Results.Redirect("/openapi/v1.json"));
+    app.MapGet("/", () => TypedResults.Redirect("/openapi/v1.json")).ExcludeFromDescription();
 }
 
 // Disabled this, so that if there are certificate problems during demonstration it will still be possible to access the API
 //app.UseHttpsRedirection();
 
-app.MapGet("/plan/buy", (decimal amount, BuyOrderPlanner planner) => ExecutePlan(amount, planner));
+app.MapGet("/plan/buy", (decimal amount, BuyOrderPlanner planner) => GeneratePlan(amount, planner));
 
-app.MapGet("/plan/sell", (decimal amount, SellOrderPlanner planner) => ExecutePlan(amount, planner));
+app.MapGet("/plan/sell", (decimal amount, SellOrderPlanner planner) => GeneratePlan(amount, planner));
 
 app.Run();
 
-static IResult ExecutePlan(decimal amount, OrderPlanner planner)
+static Results<Ok<OrderPlan>, BadRequest<string>> GeneratePlan(decimal amount, OrderPlanner planner)
 {
     try
     {
-        return Results.Ok(planner.Plan(amount));
+        return TypedResults.Ok(planner.Plan(amount));
     }
     catch (InsufficientBalanceException)
     {
-        return Results.BadRequest("You do not have enough funds or there are not enough available orders to complete this action");
+        return TypedResults.BadRequest(
+            "You do not have enough funds or there are not enough available orders to complete this action");
     }
 }
