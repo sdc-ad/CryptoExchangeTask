@@ -4,7 +4,7 @@ using CryptoExchangeTask.Core.Repository;
 namespace CryptoExchangeTask.Core;
 
 /// <summary>
-/// Given a user request to buy, determines the optimum set of orders which should be placed to
+/// Given a user request to sell, determines the optimum set of orders which should be placed to
 /// fulfill that request.
 /// </summary>
 public class SellOrderPlanner : OrderPlanner
@@ -22,7 +22,7 @@ public class SellOrderPlanner : OrderPlanner
     // Generated orders are always "sell"
     protected override OrderType OrderType => OrderType.Sell;
 
-    // When buying we will consume the Crypto balance at each exchange
+    // When selling we will consume the Crypto balance at each exchange
     protected override decimal AvailableBalance(AvailableFunds availableFunds) => availableFunds.Crypto;
 
     // Balance is the Crypto amount, no conversion is necessary

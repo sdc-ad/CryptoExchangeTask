@@ -37,7 +37,13 @@ public abstract class OrderPlanner
     /// </summary>
     /// <param name="amount">The amount of crypto product to buy or sell.</param>
     /// <returns>A plan containing the orders to be executed at each exchange.</returns>
-    /// <exception cref="InsufficientBalanceException"></exception>
+    /// <exception cref="InsufficientBalanceException">
+    /// Thrown if the user does not have a sufficient balance or there are not enough order book entries
+    /// to complete the requested order plan.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the amount is not greater than 0.
+    /// </exception>
     public OrderPlan Plan(decimal amount)
     {
         if (amount <= 0)
@@ -100,7 +106,7 @@ public abstract class OrderPlanner
             {
                 // The balance on this object is mutable and allows us to track
                 // how much has been used at each exchange so far.
-                // Each order shares a reference to the same object.
+                // Each order at the exchange shares a reference to the same object.
                 var exchangeState = new ExchangePlanState
                 {
                     ExchangeId = ex.Id,
