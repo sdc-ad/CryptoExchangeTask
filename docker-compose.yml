@@ -1,0 +1,15 @@
+services:
+  cryptoexchangetask-webapi:
+    build:
+      dockerfile: CryptoExchangeTask.WebApi/Dockerfile
+      context: .
+    volumes:
+    - ./cert.pfx:/etc/certs/CryptoExchangeTask.WebApi/cert.pfx
+    environment:
+    - ASPNETCORE_Kestrel__Certificates__Default__Path=/etc/certs/CryptoExchangeTask.WebApi/cert.pfx
+    - ASPNETCORE_Kestrel__Certificates__Default__Password={D1271D42-D765-4AF0-B04B-132ECF609BD7}
+    - ASPNETCORE_HTTP_PORTS=8080
+    - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+    - 8080:8080
+    - 8081:8081

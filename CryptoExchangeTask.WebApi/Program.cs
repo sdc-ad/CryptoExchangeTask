@@ -18,11 +18,8 @@ builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Converters.Ad
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapGet("/", () => TypedResults.Redirect("/openapi/v1.json")).ExcludeFromDescription();
-}
+app.MapOpenApi();
+app.MapGet("/", () => TypedResults.Redirect("/openapi/v1.json")).ExcludeFromDescription();
 
 // Disabled this, so that if there are certificate problems during demonstration it will still be possible to access the API
 //app.UseHttpsRedirection();
