@@ -15,10 +15,7 @@ public abstract class OrderPlanner
 
     public OrderPlan Plan(decimal amount)
     {
-        return new OrderPlan
-        {
-            PlannedOrders = GetPlannedOrders(amount).ToList()
-        };
+        return new OrderPlan(GetPlannedOrders(amount).ToList());
     }
 
     protected abstract decimal AvailableBalance(AvailableFunds availableFunds);
@@ -68,13 +65,11 @@ public abstract class OrderPlanner
             amount -= plannedAmount;
             order.ExchangePlanState.Balance -= AmountToBalance(plannedAmount, order.Price);
 
-            yield return new PlannedOrder
-            {
-                FulfilledByExchangeId = order.ExchangePlanState.ExchangeId,
-                FulfilledByOrderId = order.OrderId,
-                Amount = plannedAmount,
-                Price = order.Price
-            };
+            yield return new PlannedOrder(
+                FulfilledByExchangeId: order.ExchangePlanState.ExchangeId,
+                FulfilledByOrderId: order.OrderId,
+                Amount: plannedAmount,
+                Price: order.Price);
 
             if (amount <= 0)
             {
