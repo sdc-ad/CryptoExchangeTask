@@ -32,6 +32,11 @@ app.Run();
 
 static Results<Ok<OrderPlan>, BadRequest<string>> GeneratePlan(decimal amount, OrderPlanner planner)
 {
+    if (amount <= 0)
+    {
+        return TypedResults.BadRequest("The amount must be greater than 0");
+    }
+
     try
     {
         return TypedResults.Ok(planner.Plan(amount));

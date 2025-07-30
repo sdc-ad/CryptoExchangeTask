@@ -40,6 +40,11 @@ public abstract class OrderPlanner
     /// <exception cref="InsufficientBalanceException"></exception>
     public OrderPlan Plan(decimal amount)
     {
+        if (amount <= 0)
+        {
+            throw new ArgumentException("Must be greater than 0", nameof(amount));
+        }
+
         return new OrderPlan(GetPlannedOrders(amount).ToList());
     }
 

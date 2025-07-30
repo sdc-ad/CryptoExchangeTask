@@ -110,6 +110,20 @@ public class BuyTests : OrderPlannerTestBase
     }
 
     /// <summary>
+    /// Throws an exception if the requested amount is <= 0
+    /// </summary>
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void InvalidPlansBuyAmountLessThan0(int amount)
+    {
+        var exchange1Ask1 = MakeEntry(3, 250);
+        var exchange1 = MakeExchange(10, 375, [], [exchange1Ask1]);
+
+        Assert.Throws<ArgumentException>(() => MakePlanner(exchange1).Plan(amount));
+    }
+
+    /// <summary>
     /// Create an instance of the "buy" planner.
     /// </summary>
     /// <param name="exchanges">The test exchange data.</param>
