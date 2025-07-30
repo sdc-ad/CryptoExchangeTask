@@ -1,0 +1,10 @@
+@CryptoExchangeTask.WebApi_HostAddress = https://localhost:7138
+@amount=1
+
+GET {{CryptoExchangeTask.WebApi_HostAddress}}/plan/buy?amount={{amount}}
+
+###
+
+GET {{CryptoExchangeTask.WebApi_HostAddress}}/plan/sell?amount={{amount}}
+
+###
