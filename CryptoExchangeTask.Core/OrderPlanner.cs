@@ -125,6 +125,10 @@ public abstract class OrderPlanner
 
         // Sort the orders so that the most preferable ones are first.
         // i.e. lowest price first for buy or highest price first for sell.
+        //
+        // Currently I only sort by price here. Adding sorting by exchange available
+        // balance as well would also make it so that request would be fulfilled
+        // using the minimum number of orders, if that was required.
         orders = SortOrderPlanStates(orders);
 
         // Take entries from this list until we have fulfilled the requested order

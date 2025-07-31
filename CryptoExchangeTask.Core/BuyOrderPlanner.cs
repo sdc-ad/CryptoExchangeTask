@@ -26,6 +26,10 @@ public class BuyOrderPlanner : OrderPlanner
     protected override decimal AvailableBalance(AvailableFunds availableFunds) => availableFunds.Euro;
 
     // Balance is Euros so must be converted to an amount of crypto product
+    //
+    // I don't currently do any rounding here, so this can lead to long decimal amounts of crypto product
+    // being planned. Presumably there is a limit to how precise this value is allowed to be and should
+    // round to that.
     protected override decimal BalanceToAmount(decimal balance, decimal price) => balance / price;
 
     // Balance is Euros so the amount must be converted to a balance
